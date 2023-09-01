@@ -1,0 +1,38 @@
+networks:
+    sqljwtapi-net:
+volumes:
+    sqljwtapi-data:
+services:
+  api:
+    image: exjwtapi-image:latest
+    container_name: sqljwtapi-container
+    ports:
+      - 8000:80
+      - 8001:443
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "8001"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - sqljwtapi-net
+    
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqljwtapi
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=&&Strong00
+    volumes:
+      - sqljwtapi-data:/var/opt/mssql
+    networks:
+      - sqljwtapi-net

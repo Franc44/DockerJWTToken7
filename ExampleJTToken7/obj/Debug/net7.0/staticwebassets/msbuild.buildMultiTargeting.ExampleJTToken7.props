@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ExampleJTToken7.props" />
+</Project>
